@@ -1,32 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 char **av;
 
 char *prompt(void);
 char **split_string(char *str);
+int execute(char **cmd);
 
 int main(void)
 {
 	char *buffer;
-	int i = 0;
-	char **av;
+	char **cmd = NULL;
 
-	printf("=================================\n"); //prints a pretty line
+	printf("========================================================\n"); //prints a pretty line
 
 	while (1) //while loop always happens
 	{
 		buffer = prompt(); //getline in prompt function returns string and assigns to buffer
 		printf("%s", buffer); //test that buffer has the string
-		av = split_string(buffer); //split_string returns array of string pointers and assigns to av
-		printf("split_string success");
-		while (av[i]) //test that av has the array of strings
-		{
-			printf("%s", av[i]);
-			i++;
-		}
-		//fork and execve
+		cmd = split_string(buffer); //returns array of string pointers and assigns to av
+		if (cmd[0] != NULL)
+			printf("split_string success!\n");
+
+		if (execute(cmd) == -1)//fork and execve with execute function
+			break;
 	}
 
 	return (0);
@@ -43,33 +42,48 @@ char *prompt(void)
 	return (buffer);
 }
 
-char **split_string(char *buffer)
+char **split_string(char *str)
 {
-	char* token;
-	int i = 0, numTokens = 0, len = 0;
+	char *buffer = strdup(str);
+	char *token;
+	int i = 0, numTokens = 0;
 	char prev = '0';
 
-	while (buffer[len])
+	while (buffer[i])
 	{
-		if (buffer[len] == ' ' && prev != ' ') //comparison between pointer and integer???
+		if (buffer[i] == ' ' && prev != ' ')
 			numTokens++;
-		prev = buffer[len];
-		len++;
+		prev = buffer[i];
+		i++;
 	}
 
-	token = malloc(sizeof(*av) * (numTokens + 2)); //sizeof of what???
+	av = malloc(sizeof(*av) * (numTokens + 2));
 
-	token = strtok(buffer, " ");
-	av[i] = token;
-	i++;
+	token = strtok(buffer, " \n");
+	av[0] = token;
+	i = 1;
 
 	while (token != NULL)
 	{
-		token = strtok(NULL, " ");
+		token = strtok(NULL, " \n");
 		av[i] = token;
 		i++;
 	}
 
 	av[i] = NULL;
 	return (av);
+}
+
+int execute(char **cmd)
+{
+	printf("Before execve\n");
+
+	if (execve(cmd[0], cmd, NULL) == -1)
+	{
+		perror("Error");
+	}
+
+	printf("After execve\n");
+
+	return (0);
 }
