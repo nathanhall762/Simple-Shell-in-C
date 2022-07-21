@@ -62,7 +62,7 @@ char **split_string(char *str)
 
 	for (i = 0; token != NULL; i++)
 	{
-		printf("%s\n", token);
+//		printf("%s\n", token);
 		av[i] = token;
 		token = strtok(NULL, " \n ");
 	}
