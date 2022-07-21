@@ -5,8 +5,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-char **av;
-
 char *prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
@@ -20,12 +18,13 @@ int main(void)
 
 	while (1) //while loop always happens
 	{
-		buffer = prompt(); //getline in prompt function returns string and assigns to buffer
-		cmd = split_string(buffer); //returns array of string pointers and assigns to av
-		if (execute(cmd) == -1)//fork and execve with execute function
-			break;
+		{
+			buffer = prompt(); //getline in prompt function returns string and assigns to buffer
+			cmd = split_string(buffer); //returns array of string pointers and assigns to av
+			if (execute(cmd) == -1)//fork and execve with execute function
+				break;
+		}
 	}
-	printf("Error");
 	return (0);
 }
 
@@ -46,6 +45,7 @@ char **split_string(char *str)
 	char *token;
 	int i = 0, numTokens = 0;
 	char prev = '0';
+	char **av;
 
 	while (buffer[i])
 	{
