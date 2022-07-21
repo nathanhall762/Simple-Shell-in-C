@@ -44,7 +44,7 @@ char **split_string(char *str)
 {
 	char *buffer = strdup(str);
 	char *token;
-	unsigned int i, numTokens = 0;
+	size_t i, numTokens = 0;
 	char prev;
 
 	for (i = 0; buffer[i]; i++)
@@ -57,13 +57,16 @@ char **split_string(char *str)
 	}
 
 	av = malloc(sizeof(*av) * (numTokens + 2));
+	if (av)
+		printf("malloc successful\n");
 
 	token = strtok(buffer, " \n");
 
-	for (i = 0; token; i++)
+	for (i = 0; token != NULL; i++)
 	{
-		token = strtok(NULL, " \n");
+		printf("%s\n", token);
 		av[i] = token;
+		token = strtok(NULL, " \n");
 	}
 
 	av[i] = NULL;
