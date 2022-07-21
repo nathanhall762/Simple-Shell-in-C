@@ -21,11 +21,7 @@ int main(void)
 	while (1) //while loop always happens
 	{
 		buffer = prompt(); //getline in prompt function returns string and assigns to buffer
-		printf("%s", buffer); //test that buffer has the string
 		cmd = split_string(buffer); //returns array of string pointers and assigns to av
-		if (cmd[0] != NULL)
-			printf("split_string success!\n");
-
 		if (execute(cmd) == -1)//fork and execve with execute function
 			break;
 	}
