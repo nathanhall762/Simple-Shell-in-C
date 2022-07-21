@@ -56,15 +56,15 @@ char **split_string(char *str)
 			prev = buffer[i - 1];
 	}
 
-	av = malloc(sizeof(*av) * (numTokens + 2));
+	av = malloc(sizeof(av) * (numTokens + 2));
 
-	token = strtok(buffer, " \n");
+	token = strtok(buffer, " \n ");
 
 	for (i = 0; token != NULL; i++)
 	{
 		printf("%s\n", token);
 		av[i] = token;
-		token = strtok(NULL, " \n");
+		token = strtok(NULL, " \n ");
 	}
 
 	av[i] = NULL;
