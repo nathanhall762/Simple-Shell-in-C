@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 char **av;
 
@@ -27,7 +29,7 @@ int main(void)
 		if (execute(cmd) == -1)//fork and execve with execute function
 			break;
 	}
-
+	printf("Error");
 	return (0);
 }
 
@@ -76,14 +78,23 @@ char **split_string(char *str)
 
 int execute(char **cmd)
 {
-	printf("Before execve\n");
+	pid_t child_pid;
 
-	if (execve(cmd[0], cmd, NULL) == -1)
+	child_pid = fork();
+
+	if (child_pid != 0)
 	{
-		perror("Error");
+		wait(NULL);
+		return (0);
 	}
 
-	printf("After execve\n");
-
-	return (0);
+	if (child_pid == 0)
+	{
+		if (execve(cmd[0], cmd, NULL) == -1)
+		{
+			perror("Error");
+			return (-1);
+		}
+	}
+	return (-1);
 }
