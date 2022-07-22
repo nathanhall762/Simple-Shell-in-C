@@ -5,24 +5,24 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-char **av;
-
 char *prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
 
 int main(void)
 {
+	char **av;
 	char *buffer;
 	char **cmd = NULL;
 
-	printf("========================================================\n"); //prints a pretty line
+	printf("========================================================\n");
+	/* prints a pretty line */
 
-	while (1) //while loop always happens
+	while (1) /* while loop always happens */
 	{
-		buffer = prompt(); //getline in prompt function returns string and assigns to buffer
-		cmd = split_string(buffer); //returns array of string pointers and assigns to av
-		if (execute(cmd) == -1)//fork and execve with execute function
+		buffer = prompt(); /* getline in func returns str and assigns to buffer */
+		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
+		if (execute(cmd) == -1)/* fork and execve with execute function */
 			break;
 	}
 	printf("Error: shell failure: Terminating . . .\n");
@@ -42,6 +42,7 @@ char *prompt(void)
 
 char **split_string(char *str)
 {
+	char **arg;
 	char *buffer = strdup(str);
 	char *token;
 	size_t i, numTokens = 0;
@@ -55,20 +56,17 @@ char **split_string(char *str)
 		if (i > 0)
 			prev = buffer[i - 1];
 	}
-
-	av = malloc(sizeof(av) * (numTokens + 2));
-
+	arg = malloc(sizeof(arg) * (numTokens + 2));
 	token = strtok(buffer, " \n ");
 
 	for (i = 0; token != NULL; i++)
 	{
-//		printf("%s\n", token);
-		av[i] = token;
+		arg[i] = token;
 		token = strtok(NULL, " \n ");
 	}
 
-	av[i] = NULL;
-	return (av);
+	arg[i] = NULL;
+	return (arg);
 }
 
 int execute(char **cmd)
