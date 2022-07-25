@@ -1,22 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
-char *prompt(void);
-char **split_string(char *str);
-int execute(char **cmd);
+#include "main.h"
 
 int main(void)
 {
 	char **av;
 	char *buffer;
 	char **cmd = NULL;
-
-	printf("========================================================\n");
-	/* prints a pretty line */
 
 	while (1) /* while loop always happens */
 	{
@@ -25,16 +13,17 @@ int main(void)
 		if (execute(cmd) == -1)/* fork and execve with execute function */
 			break;
 	}
-	printf("Error: shell failure: Terminating . . .\n");
+	perror("Error: ");
 	return (0);
 }
 
 char *prompt(void)
 {
+	char *ps = "$ ";
 	char *buffer = NULL;
 	size_t bufsize;
 
-	printf("$ ");
+	write(1, ps, _strlen(ps));
 	getline(&buffer, &bufsize, stdin);
 
 	return (buffer);
@@ -85,7 +74,7 @@ int execute(char **cmd)
 	{
 		if (execve(cmd[0], cmd, NULL) == -1)
 		{
-			perror("Error: command failure");
+			perror("Error: ");
 			return (-1);
 		}
 	}

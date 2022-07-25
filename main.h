@@ -9,7 +9,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-char **av;
+int _strlen(char *s);
+int _putchar(char c);
 char **getav(char *);
 void print_array(char **av);
 int exe(char **cmd);
