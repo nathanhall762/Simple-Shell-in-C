@@ -8,8 +8,8 @@ int main(int ac, char **av)
 
 	while (1) /* while loop always happens */
 	{
-
 		buffer = prompt(); /* getline in func returns str and assigns to buffer */
+		signal(SIGINT, sighand);
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
 		if (execute(cmd) == -1)/* fork and execve with execute function */
 			break;
