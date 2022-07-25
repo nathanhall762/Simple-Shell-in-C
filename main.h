@@ -14,5 +14,6 @@ int _putchar(char c);
 char *prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
+void sighand(int sig);
 
 #endif /* MAIN_H */

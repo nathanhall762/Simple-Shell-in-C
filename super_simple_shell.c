@@ -1,13 +1,14 @@
 #include "main.h"
 
-int main(void)
+int main(int ac, char **av)
 {
-	char **av;
+	(void)ac;
 	char *buffer;
 	char **cmd = NULL;
 
 	while (1) /* while loop always happens */
 	{
+
 		buffer = prompt(); /* getline in func returns str and assigns to buffer */
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
 		if (execute(cmd) == -1)/* fork and execve with execute function */
@@ -24,7 +25,11 @@ char *prompt(void)
 	size_t bufsize;
 
 	write(1, ps, _strlen(ps));
-	getline(&buffer, &bufsize, stdin);
+	if (getline(&buffer, &bufsize, stdin) == EOF)
+	{
+		free(buffer);
+		exit(0);
+	}
 
 	return (buffer);
 }

@@ -29,3 +29,14 @@ int _strlen(char *s)
 
 	return (str);
 }
+
+/**
+ * sighand - handles sigint
+ * @sig: signal
+ */
+
+void sighand(int sig)
+{
+	if (sig == SIGINT)
+		write(STDOUT_FILENO, "\n$ ", 5);
+}
