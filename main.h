@@ -9,6 +9,8 @@
 #include <wait.h>
 #include <sys/stat.h>
 
+extern char **environ;
+
 int _strlen(char *s);
 int _putchar(char c);
 char *prompt(void);
