@@ -8,13 +8,13 @@ int main(int ac, char **av)
 
 	while (1) /* while loop always happens */
 	{
-		signal(SIGINT, sighand);
+		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
 		buffer = prompt(); /* getline in func returns str and assigns to buffer */
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
 		if (execute(cmd) == -1)/* fork and execve with execute function */
 			break;
 	}
-	perror("Error: ");
+
 	return (0);
 }
 
@@ -50,6 +50,7 @@ char **split_string(char *str)
 		if (i > 0)
 			prev = buffer[i - 1];
 	}
+
 	arg = malloc(sizeof(arg) * (numTokens + 2));
 	token = strtok(buffer, " \n ");
 
@@ -79,9 +80,10 @@ int execute(char **cmd)
 	{
 		if (execve(cmd[0], cmd, NULL) == -1)
 		{
-			perror("Error: ");
+			perror("Shell Error");
 			return (-1);
 		}
 	}
+
 	return (-1);
 }
