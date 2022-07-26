@@ -17,5 +17,6 @@ char *prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
 void sighand(int sig);
+char *bin_check(char **av);
 
 #endif /* MAIN_H */
