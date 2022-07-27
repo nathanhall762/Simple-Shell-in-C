@@ -1,16 +1,17 @@
-#include "main"
+#include "main.h"
 
 char *bin_check(char **av)
 {
 	struct stat st;
 	int i = 0;
 	char *new;
-	char **bins = {"/usr/local/sbin/",
+	char *bins[] = {"/usr/local/sbin/",
 			"usr/local/bin/",
 			"/usr/bin/",
 			"/usr/sbin/",
 			"/sbin/",
-			"/bin/"}
+			"/bin/",
+			NULL};
 
 	while (bins)
 	{

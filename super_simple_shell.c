@@ -6,24 +6,27 @@ int main(int ac, char **av)
 	char *buffer;
 	char **cmd = NULL;
 	struct stat st;
+	int builtinflag;
 
 	while (1) /* while loop always happens */
 	{
 		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
 		buffer = prompt(); /* getline in func returns str and assigns to buffer */
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
-
-		cmd[0] = bin_check(cmd); /* assign return string of find to cmd[0] */
-
-		if (stat (cmd[0], &st) == 0) /* check that cmd[0] exists */
+		builtinflag = builtins(cmd[0]);
+		if (builtinflag != 1)
 		{
-			if (execute(cmd) == -1)/* fork and execve with execute function */
-				break;
+			cmd[0] = bin_check(cmd); /* assign return string of find to cmd[0] */
+			printf("%s", cmd[0]);
+			if (stat (cmd[0], &st) == 0) /* check that cmd[0] exists */
+			{
+				if (execute(cmd) == -1)/* fork and execve with execute function */
+					break;
+			}
 		}
 		else
 			perror("");
 	}
-
 	return (0);
 }
 
@@ -76,8 +79,6 @@ char **split_string(char *str)
 int execute(char **cmd)
 {
 	pid_t child_pid;
-
-	printf("forked!");
 
 	child_pid = fork();
 
