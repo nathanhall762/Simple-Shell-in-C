@@ -16,16 +16,14 @@ int main(int ac, char **av)
 		builtinflag = builtins(cmd[0]);
 		if (builtinflag != 1)
 		{
-			cmd[0] = bin_check(cmd); /* assign return string of find to cmd[0] */
-			printf("%s", cmd[0]);
 			if (stat (cmd[0], &st) == 0) /* check that cmd[0] exists */
 			{
 				if (execute(cmd) == -1)/* fork and execve with execute function */
 					break;
 			}
+			else
+				perror("");
 		}
-		else
-			perror("");
 	}
 	return (0);
 }
@@ -42,7 +40,6 @@ char *prompt(void)
 		free(buffer);
 		exit(0);
 	}
-
 	return (buffer);
 }
 

@@ -12,7 +12,7 @@ int builtins(char *cmd)
 	}
 	if (_strcmp(cmd, builtin_list[1]) == 0)
 	{
-		return (1);
+		exit(EXIT_SUCCESS);
 	}
 	return (0);
 }
