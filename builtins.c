@@ -1,5 +1,11 @@
 #include "main.h"
 
+/**
+* builtins - checks if cmd tokens call builtin function
+* @cmd: string of cmd[0] from main
+*
+* Return: 0 if no builtin is called, else 1
+*/
 int builtins(char *cmd)
 {
 	int strcmp_result;
@@ -18,13 +24,13 @@ int builtins(char *cmd)
 }
 
 /**
- * main - prints the environment
+ * env - prints the environment
  *
  * Return: Always 0.
  */
 void env(void)
 {
-    unsigned int i = 0, j = 0;
+	unsigned int i = 0, j = 0;
 
 	while (environ[i])
 	{

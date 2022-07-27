@@ -1,5 +1,13 @@
 #include "main.h"
 
+/**
+* main - entry point
+* @ac: number of args
+* @av: array of args
+* @env: environment array
+*
+* Return: 0
+*/
 int main(int ac, char **av, char **env)
 {
 	(void)ac;
@@ -16,7 +24,7 @@ int main(int ac, char **av, char **env)
 		builtinflag = builtins(cmd[0]);
 		if (builtinflag != 1)
 		{
-			if (stat (cmd[0], &st) == 0) /* check that cmd[0] exists */
+			if (stat(cmd[0], &st) == 0) /* check that cmd[0] exists */
 			{
 				if (execute(cmd) == -1)/* fork and execve with execute function */
 					break;
@@ -28,6 +36,11 @@ int main(int ac, char **av, char **env)
 	return (0);
 }
 
+/**
+* prompt - prints $ to stdout and gets input from user
+*
+* Return: string entered by user
+*/
 char *prompt(void)
 {
 	char *ps = "$ ";
@@ -43,6 +56,12 @@ char *prompt(void)
 	return (buffer);
 }
 
+/**
+* split_string - splits string into tokens
+* @str: string to split
+*
+* Return: array of tokens
+*/
 char **split_string(char *str)
 {
 	char **arg;
@@ -73,6 +92,12 @@ char **split_string(char *str)
 	return (arg);
 }
 
+/**
+* execute - executes array of command tokens
+* @cmd: array of cmd tokens
+*
+* Return: 0 if success, -1 on fail
+*/
 int execute(char **cmd)
 {
 	pid_t child_pid;

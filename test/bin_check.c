@@ -1,5 +1,8 @@
 #include "main.h"
 
+/**
+* bin_check
+*/
 char *bin_check(char **av)
 {
 	struct stat st;
