@@ -18,5 +18,7 @@ char **split_string(char *str);
 int execute(char **cmd);
 void sighand(int sig);
 char *bin_check(char **av);
+char *str_smash(char *str1, char *str2);
+void _getenv(void);
 
 #endif /* MAIN_H */
