@@ -3,27 +3,28 @@
 int main(int ac, char **av)
 {
 	(void)ac;
-	char *buffer;
+	int exe;
+	char *buffer = NULL;
 	char **cmd = NULL;
-	struct stat st;
 
 	while (1) /* while loop always happens */
 	{
 		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
 		buffer = prompt(); /* getline in func returns str and assigns to buffer */
+		if (!buffer || !buffer[0])
+		{
+			free(buffer);
+			continue;
+		}
+
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
 
-		cmd[0] = bin_check(cmd); /* assign return string of find to cmd[0] */
-
-		if (stat (cmd[0], &st) == 0) /* check that cmd[0] exists */
-		{
-			if (execute(cmd) == -1)/* fork and execve with execute function */
-				break;
-		}
-		else
-			perror("");
+		if (cmd)
+			exe = execute(cmd);
 	}
 
+	free(buffer);
+	free(cmd);
 	return (0);
 }
 
@@ -31,11 +32,15 @@ char *prompt(void)
 {
 	char *ps = "$ ";
 	char *buffer = NULL;
-	size_t bufsize;
+	size_t bufsize = 0;
 
-	write(1, ps, _strlen(ps));
-	if (getline(&buffer, &bufsize, stdin) == EOF)
+	if (isatty(0))
+		write(1, ps, _strlen(ps));
+
+	if (getline(&buffer, &bufsize, stdin) == -1)
 	{
+		if (isatty(0))
+			write(0, "\n", 1);
 		free(buffer);
 		exit(0);
 	}
@@ -46,55 +51,52 @@ char *prompt(void)
 char **split_string(char *str)
 {
 	char **arg;
-	char *buffer = strdup(str);
 	char *token;
-	size_t i, numTokens = 0;
-	char prev;
-
-	for (i = 0; buffer[i]; i++)
+	unsigned int i, numTokens = 0;
+	
+	for (i = 0; str[i]; i++)
 	{
-		if (buffer[i] == ' ' && prev != ' ')
+		if (str[i] == ' ')
 			numTokens++;
 
-		if (i > 0)
-			prev = buffer[i - 1];
 	}
 
 	arg = malloc(sizeof(arg) * (numTokens + 2));
-	token = strtok(buffer, " \n ");
+	if (!arg)
+	{
+		perror("arg malloc Error");
+		return (NULL);
+	}
 
-	for (i = 0; token != NULL; i++)
+	token = strtok(str, " \n ");
+	for (i = 0; i < (numTokens + 1); i++)
 	{
 		arg[i] = token;
 		token = strtok(NULL, " \n ");
 	}
-
 	arg[i] = NULL;
+
+	if (!arg[0])
+	{
+		free(arg);
+		arg = NULL;
+	}
+
 	return (arg);
 }
 
 int execute(char **cmd)
 {
-	pid_t child_pid;
+	int x;
+	pid_t child = fork();
 
-	printf("forked!");
+	if (child == 0)
+		execve(cmd[0], cmd, environ);
 
-	child_pid = fork();
+	if (child == -1)
+		perror("Fork Failure");
 
-	if (child_pid != 0)
-	{
-		wait(NULL);
-		return (0);
-	}
-
-	if (child_pid == 0)
-	{
-		if (execve(cmd[0], cmd, NULL) == -1)
-		{
-/*			perror("Shell Error");*/
-			return (-1);
-		}
-	}
-
-	return (-1);
+	waitpid(child, &x, 0);
+	x = WEXITSTATUS(x);
+	return (x);
 }
