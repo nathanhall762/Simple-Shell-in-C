@@ -14,6 +14,7 @@ extern char **environ;
 int _strcmp(char *s1, char *s2);
 int _strlen(char *s);
 int _putchar(char c);
+<<<<<<< HEAD
 int prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
@@ -21,6 +22,15 @@ void sighand(int sig);
 int builtins(char *cmd);
 void env(void);
 void free_grid(char **grid);
+=======
+int *prompt(void);
+char **split_string(char *str);
+int execute(char **cmd);
+void sighand(int sig);
+char *bin_check(char **av);
+char *str_smash(char *str1, char *str2);
+void _getenv(void);
+>>>>>>> 8233b62648813dbcd4226a5f9371d5c233cd82f3
 
 char **cmd;
 
