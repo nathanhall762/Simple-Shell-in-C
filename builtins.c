@@ -8,7 +8,6 @@
 */
 int builtins(char *cmd)
 {
-	int strcmp_result;
 	char *builtin_list[] = { "env", "exit", NULL};
 
 	if (_strcmp(cmd, builtin_list[0]) == 0)

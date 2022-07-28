@@ -14,11 +14,14 @@ extern char **environ;
 int _strcmp(char *s1, char *s2);
 int _strlen(char *s);
 int _putchar(char c);
-char *prompt(void);
+int prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
 void sighand(int sig);
 int builtins(char *cmd);
 void env(void);
+void free_grid(char **grid);
+
+char **cmd;
 
 #endif /* MAIN_H */

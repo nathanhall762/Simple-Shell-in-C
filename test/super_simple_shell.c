@@ -10,18 +10,27 @@
 */
 int main(int ac, char **av, char **env)
 {
-	(void)ac;
 	char *buffer;
 	char **cmd = NULL;
 	struct stat st;
 	int builtinflag;
+	size_t bufsize;
+
+	(void)ac;
+	(void)av;
+	(void)env;
 
 	while (1) /* while loop always happens */
 	{
 		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
-		buffer = prompt(); /* getline in func returns str and assigns to buffer */
+		prompt(); /* getline in func returns str and assigns to buffer */
+		if (getline(&buffer, &bufsize, stdin) == EOF)
+		{
+			free(buffer);
+			exit(0);
+		}
+		builtinflag = 0; /*builtins(cmd[0]);*/
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
-		builtinflag = builtins(cmd[0]);
 		if (builtinflag != 1)
 		{
 			if (stat(cmd[0], &st) == 0) /* check that cmd[0] exists */
@@ -33,6 +42,7 @@ int main(int ac, char **av, char **env)
 				perror("");
 		}
 	}
+	free(buffer);
 	return (0);
 }
 
@@ -41,19 +51,13 @@ int main(int ac, char **av, char **env)
 *
 * Return: string entered by user
 */
-char *prompt(void)
+int prompt(void)
 {
-	char *ps = "$ ";
-	char *buffer = NULL;
-	size_t bufsize;
+	char *ps = "($) ";
 
 	write(1, ps, _strlen(ps));
-	if (getline(&buffer, &bufsize, stdin) == EOF)
-	{
-		free(buffer);
-		exit(0);
-	}
-	return (buffer);
+
+	return (0);
 }
 
 /**
