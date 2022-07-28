@@ -23,7 +23,7 @@ int builtins(char *cmd);
 void env(void);
 void free_grid(char **grid);
 
-int *prompt(void);
+int prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
 void sighand(int sig);

@@ -26,9 +26,6 @@ int main(int ac, char **av)
 		{
 			if (isatty(0))
 				write(0, "\n", 1);
-/*			free(buffer);
-			free_grid(cmd);
-			exit(0);*/
 			break;
 		}
 		if (!buffer || !buffer[0])
