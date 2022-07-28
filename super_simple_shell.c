@@ -9,58 +9,53 @@
 */
 int main(int ac, char **av)
 {
-	int exe;
-	char *buffer = NULL;
-	char **cmd = NULL;
-
 	(void)ac;
-	(void)av;
-	(void)exe;
+	int exe;
+	char *ps = "$ ";
+	char *env = NULL;
+	char *buffer = NULL;
+	char **cmd;
+	char **trail;
+	size_t bufsize = 0;
 
 	while (1) /* while loop always happens */
 	{
 		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
-		buffer = prompt(); /* getline in func returns str and assigns to buffer */
-		if (!buffer || !buffer[0])
+
+		if (isatty(0))
+			write(1, ps, _strlen(ps));
+
+		if (getline(&buffer, &bufsize, stdin) == -1)
 		{
-			free(buffer);
-			continue;
+			if (isatty(0))
+			{
+				write(0, "\n", 1);
+				free(buffer);
+				exit(0);
+			}
 		}
 
+		if (!buffer)
+			exit(0);
+		
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
+		if (!cmd || cmd[0])
+			continue;
 
-		if (cmd)
-			exe = execute(cmd);
+		trail = _getenv("PATH");
+		env = map(cmd, trail); /* leaky */
+
+		if (env)
+			exe = execute(env, cmd);
+
+		free(cmd);
+		free(trail);
 	}
 
-	free(buffer);
+	free(env);
 	free(cmd);
+	free(buffer);
 	return (0);
-}
-
-/**
-* prompt - prints $ to stdout and gets input from user
-*
-* Return: string entered by user
-*/
-char *prompt(void)
-{
-	char *ps = "$ ";
-	char *buffer = NULL;
-	size_t bufsize = 0;
-
-	if (isatty(0))
-		write(1, ps, _strlen(ps));
-
-	if (getline(&buffer, &bufsize, stdin) == -1)
-	{
-		if (isatty(0))
-			write(0, "\n", 1);
-		free(buffer);
-		exit(0);
-	}
-
-	return (buffer);
 }
 
 /**
@@ -82,7 +77,7 @@ char **split_string(char *str)
 
 	}
 
-	arg = malloc(sizeof(arg) * (numTokens + 2));
+	arg = malloc(8 * (numTokens + 2));
 	if (!arg)
 	{
 		perror("arg malloc Error");
@@ -97,7 +92,7 @@ char **split_string(char *str)
 	}
 	arg[i] = NULL;
 
-	if (!arg[0])
+	if (!arg[0] || !arg)
 	{
 		free(arg);
 		arg = NULL;
@@ -112,18 +107,17 @@ char **split_string(char *str)
 *
 * Return: 0 if success, -1 on fail
 */
-int execute(char **cmd)
+int execute(char *env, char **cmd)
 {
 	int x;
 	pid_t child = fork();
 
 	if (child == 0)
-		execve(cmd[0], cmd, environ);
+		execve(env, cmd, environ);
 
 	if (child == -1)
 		perror("Fork Failure");
 
 	waitpid(child, &x, 0);
-	x = WEXITSTATUS(x);
 	return (x);
 }
