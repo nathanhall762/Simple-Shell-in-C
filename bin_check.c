@@ -2,8 +2,8 @@
 
 /**
  * bin_check - checks sandbox binaries for a command
- * @av: command line arguments 
- * Return: char* 
+ * @av: command line arguments
+ * Return: char*
  */
 
 char *bin_check(char **av)

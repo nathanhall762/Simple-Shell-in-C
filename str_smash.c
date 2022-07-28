@@ -3,7 +3,7 @@
 /**
  * str_smash - concats two strings
  * @str1: string 1
- * @str2: string 2 
+ * @str2: string 2
  * Return: char*
  */
 

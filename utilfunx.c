@@ -42,6 +42,9 @@ void sighand(int sig)
 }
 
 
+/**
+* _getenv - prints environment to stdout
+*/
 void _getenv(void)
 {
 	unsigned int i, j;

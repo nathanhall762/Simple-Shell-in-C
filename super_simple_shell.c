@@ -1,5 +1,12 @@
 #include "main.h"
 
+/**
+* main - entry point
+* @ac: number of args
+* @av: array of args
+*
+* Return: 0
+*/
 int main(int ac, char **av)
 {
 	(void)ac;
@@ -28,6 +35,11 @@ int main(int ac, char **av)
 	return (0);
 }
 
+/**
+* prompt - prints $ to stdout and gets input from user
+*
+* Return: string entered by user
+*/
 char *prompt(void)
 {
 	char *ps = "$ ";
@@ -48,12 +60,18 @@ char *prompt(void)
 	return (buffer);
 }
 
+/**
+* split_string - splits string into tokens
+* @str: string to split
+*
+* Return: array of tokens
+*/
 char **split_string(char *str)
 {
 	char **arg;
 	char *token;
 	unsigned int i, numTokens = 0;
-	
+
 	for (i = 0; str[i]; i++)
 	{
 		if (str[i] == ' ')
@@ -85,6 +103,12 @@ char **split_string(char *str)
 	return (arg);
 }
 
+/**
+* execute - executes array of command tokens
+* @cmd: array of cmd tokens
+*
+* Return: 0 if success, -1 on fail
+*/
 int execute(char **cmd)
 {
 	int x;
