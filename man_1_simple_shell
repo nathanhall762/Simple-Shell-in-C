@@ -1,0 +1,52 @@
+.Dd 7/28/22               \" DATE
+.Dt simple_shell()      \" Program name and manual section number
+.Os Hall/Kleine
+.Sh NAME                 \" Section Header - required - don't modify
+.Nm ./hsh
+.\" The following lines are read in generating the apropos(man -k) database. Use only key
+.\" words here as the database is built based on the words here and in the .ND line.
+.Nd a simple shell that executes commands and arguments
+.Sh SYNOPSIS             \" Section Header - required - don't modify
+.Nm int main(int argc, char **argv, char **env)
+.Sh DESCRIPTION          \" Section Header - required - don't modify
+The simple shell is a command line interpreter that receives input from the user from the terminal.
+It can be used in interactive mode, initiated by the executable
+.Nm
+or in non-interactive mode by piping in input 
+(ex: 
+.Ar echo "arg0 arg1 ..." | ./hsh
+).
+.Sh LINUX COMMANDS
+Standard Linux commands can be executed within the shell by the user in interactive mode by typing the command with arguments:
+.br
+.br
+ex:
+.Ar ls -l
+.br
+.br
+Or by typing the command's full filepath:
+.br
+.br
+ex:
+.Ar /bin/ls -l
+.Sh BUILT-IN COMMANDS
+In addition to Linux commands from the environment, our simple shell contains a number of
+built-in commands:
+.br
+.br
+.Ar env
+- prints list of environment variables to stdout
+.br
+.Ar exit
+- exits the simple shell
+.br
+.Sh RETURN VALUE
+On exit with
+.Ar exit
+or
+.Ar ctrl+D
+returns 0.
+.Sh AUTHOR
+Buzz Kleine <4915@holbertonstudents.com>
+.br
+Nathan Hall <4943@holbertonstudents.com>
