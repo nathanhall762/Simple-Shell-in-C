@@ -9,10 +9,13 @@
 */
 int main(int ac, char **av)
 {
-	(void)ac;
 	int exe;
 	char *buffer = NULL;
 	char **cmd = NULL;
+
+	(void)ac;
+	(void)av;
+	(void)exe;
 
 	while (1) /* while loop always happens */
 	{
