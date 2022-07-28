@@ -11,16 +11,24 @@ int main(int ac, char **av)
 {
 	int exe;
 	char *buffer = NULL;
-	char **cmd = NULL;
+	size_t bufsize = 0;
 
 	(void)ac;
 	(void)av;
 	(void)exe;
+	cmd = NULL;
 
 	while (1) /* while loop always happens */
 	{
 		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
-		buffer = prompt(); /* getline in func returns str and assigns to buffer */
+		prompt(); /* getline in func returns str and assigns to buffer */
+		if (getline(&buffer, &bufsize, stdin) == -1)
+		{
+			if (isatty(0))
+				write(0, "\n", 1);
+			free(buffer);
+			exit(0);
+		}
 		if (!buffer || !buffer[0])
 		{
 			free(buffer);
@@ -43,24 +51,14 @@ int main(int ac, char **av)
 *
 * Return: string entered by user
 */
-char *prompt(void)
+int *prompt(void)
 {
 	char *ps = "$ ";
-	char *buffer = NULL;
-	size_t bufsize = 0;
 
 	if (isatty(0))
 		write(1, ps, _strlen(ps));
 
-	if (getline(&buffer, &bufsize, stdin) == -1)
-	{
-		if (isatty(0))
-			write(0, "\n", 1);
-		free(buffer);
-		exit(0);
-	}
-
-	return (buffer);
+	return (0);
 }
 
 /**
@@ -71,7 +69,6 @@ char *prompt(void)
 */
 char **split_string(char *str)
 {
-	char **arg;
 	char *token;
 	unsigned int i, numTokens = 0;
 
@@ -82,8 +79,8 @@ char **split_string(char *str)
 
 	}
 
-	arg = malloc(sizeof(arg) * (numTokens + 2));
-	if (!arg)
+	cmd = malloc(sizeof(cmd) * (numTokens + 2));
+	if (!cmd)
 	{
 		perror("arg malloc Error");
 		return (NULL);
@@ -92,18 +89,18 @@ char **split_string(char *str)
 	token = strtok(str, " \n ");
 	for (i = 0; i < (numTokens + 1); i++)
 	{
-		arg[i] = token;
+		cmd[i] = token;
 		token = strtok(NULL, " \n ");
 	}
-	arg[i] = NULL;
+	cmd[i] = NULL;
 
-	if (!arg[0])
+	if (!cmd[0])
 	{
-		free(arg);
-		arg = NULL;
+		free(cmd);
+		cmd = NULL;
 	}
 
-	return (arg);
+	return (cmd);
 }
 
 /**

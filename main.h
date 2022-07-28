@@ -13,12 +13,14 @@ extern char **environ;
 
 int _strlen(char *s);
 int _putchar(char c);
-char *prompt(void);
+int *prompt(void);
 char **split_string(char *str);
 int execute(char **cmd);
 void sighand(int sig);
 char *bin_check(char **av);
 char *str_smash(char *str1, char *str2);
 void _getenv(void);
+
+char **cmd;
 
 #endif /* MAIN_H */
