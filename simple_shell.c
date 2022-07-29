@@ -34,7 +34,10 @@ int main(int ac, char **av)
 			continue;
 		}
 
-		cmd = split_string(buffer); /* returns arr of str pointers & assigns to av */
+		cmd = split_string(buffer); /* returns arr of str pointers & assigns to cmd */
+
+		if (_funkyfresh(buffer, cmd) == 2)
+			continue;
 
 		if (cmd)
 			exe = execute(cmd);

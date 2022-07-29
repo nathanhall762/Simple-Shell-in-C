@@ -29,8 +29,9 @@ int execute(char **cmd);
 void sighand(int sig);
 char *bin_check(char **av);
 char *str_smash(char *str1, char *str2);
-void _getenv(void);
-
+void _env(void);
+int _funkyfresh(char *arg, char **cmd);
+void _scoot(char *arg, char **buff);
 
 char **cmd;
 
