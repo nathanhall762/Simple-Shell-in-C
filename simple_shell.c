@@ -12,17 +12,19 @@ int main(int ac, char **av)
 	int exe;
 	char *buffer = NULL;
 	size_t bufsize = 0;
+	ssize_t getty;
 
 	(void)ac;
 	(void)av;
 	(void)exe;
-	cmd = NULL;
 
 	while (1) /* while loop always happens */
 	{
 		signal(SIGINT, sighand); /* make sure SIGINT doesn't terminate loop */
 		prompt(); /* getline in func returns str and assigns to buffer */
-		if (getline(&buffer, &bufsize, stdin) == -1)
+
+		getty = getline(&buffer, &bufsize, stdin);
+		if (getty == -1)
 		{
 			if (isatty(0))
 				write(0, "\n", 1);
@@ -36,11 +38,15 @@ int main(int ac, char **av)
 
 		cmd = split_string(buffer); /* returns arr of str pointers & assigns to cmd */
 
-		if (_funkyfresh(buffer, cmd) == 2)
+		if (_funkyfresh(buffer, cmd) != 1)
 			continue;
 
-		if (cmd)
-			exe = execute(cmd);
+		if(cmd)
+		{
+			if (access(cmd[0], X_OK))
+				exe = execute(cmd);
+		}
+		free(cmd);
 	}
 
 	free(buffer);
@@ -59,6 +65,8 @@ int prompt(void)
 
 	if (isatty(0))
 		write(1, ps, _strlen(ps));
+
+	free(ps);
 
 	return (0);
 }
@@ -114,15 +122,28 @@ char **split_string(char *str)
 int execute(char **cmd)
 {
 	int x;
-	pid_t child = fork();
+	pid_t kid;
 
-	if (child == 0)
-		execve(cmd[0], cmd, environ);
+	if (cmd)
+	{
+		kid = fork();
+		if (kid == 0)
+		{
+			if (execve(cmd[0], cmd, environ) == -1);
+				perror("Command Failure");
+		}
 
-	if (child == -1)
-		perror("Fork Failure");
+		if (kid != 0)
+		{
+			perror("Fork Failure");
+			kill(kid, SIGTERM);
+		}
+		else
+			waitpid(kid, &x, WNOHANG);
+	}
 
-	waitpid(child, &x, 0);
-	x = WEXITSTATUS(x);
+	if (WIFEXITED(x))
+		x = WEXITSTATUS(x);
+
 	return (x);
 }

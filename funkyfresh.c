@@ -12,14 +12,12 @@ int _funkyfresh(char *arg, char **buff)
 
 	if (_strcmp(arg, "exit") == 0)
 	{
-		printf("exit babe\n");
 		x = 1;
 		_scoot(arg, buff);
 	}
 
 	if (_strcmp(arg, "env") == 0)
 	{
-		printf("env babe\n");
 		x = 2;
 		_env();
 	}
@@ -52,10 +50,16 @@ void _scoot(char *arg, char **buff)
 {
 	unsigned int i;
 
-	for (i = 0; buff[i] || arg[i]; i++)
-		free(buff[i]);
+	if (buff)
+	{
+		for (i = 0; buff[i] && buff; i++)
+			free(buff[i]);
 
-	free(buff);
-	free(arg);
+		free(buff);
+	}
+
+	if (arg)
+		free(arg);
+
 	exit(0);
 }
